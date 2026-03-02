@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Birthday Greeting Card</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+   <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Comic Sans MS', cursive, sans-serif;
+    }
+    
+    body {
+        background: linear-gradient(135deg, #990F02 0%, #4E0707 100%);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+        overflow-x: hidden;
+    }
+    
+    /* Initial Start Screen - Keep original background */
+    .start-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #990F02 0%, #654835 100%);
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        padding: 20px;
+        opacity: 1;
+        transition: opacity 1s ease;
+    }
+    
+    .start-screen.hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+    
+    /* Main Container - Changed background to #654835 */
+    .container {
+        width: 100%;
+        max-width: 1000px;
+        background-color: #654835; /* Changed from rgba(255, 255, 255, 0.95) */
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        position: relative;
+        display: none;
+        animation: fadeIn 1s ease;
+        color: white; /* Added for better text contrast */
+    }
+    
+    .container.active {
+        display: block;
+    }
+    
+    .header {
+        background: linear-gradient(to right, #990F02, #990F02); /* Changed to #990F02 */
+        color: white;
+        padding: 20px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    /* Changed message-box background to #990F02 */
+    .message-box {
+        background: #990F02; /* Changed from #fff9e6 */
+        border-radius: 15px;
+        padding: 25px;
+        margin: 20px auto;
+        max-width: 600px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        border-left: 8px solid #ffafcc;
+        color: white; /* Added for better text contrast */
+    }
+    
+    /* Page text color for better contrast */
+    .page p {
+        font-size: 1.3rem;
+        line-height: 1.6;
+        color: white; /* Changed from #333 */
+        margin-bottom: 30px;
+        max-width: 700px;
+    }
+    
+    .page h2 {
+        color: #ffafcc; /* Changed from #ff6b8b for better contrast */
+        font-size: 2.2rem;
+        margin-bottom: 20px;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+    }
+    
+    /* Cake colors adjusted for better visibility */
+    .cake {
+        position: absolute;
+        width: 180px;
+        height: 80px;
+        background: #d89e7c; /* Changed from #f8c8dc for better contrast */
+        border-radius: 10px 10px 0 0;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .cake-top {
+        position: absolute;
+        width: 200px;
+        height: 40px;
+        background: #b87c5c; /* Changed from #ffafcc for better contrast */
+        border-radius: 50% 50% 0 0;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    /* Footer adjusted for better contrast */
+    .footer {
+        background-color: rgba(255, 255, 255, 0.1); /* Changed from #f8f9fa */
+        padding: 20px;
+        text-align: center;
+        color: #ffafcc; /* Changed from #666 */
+        border-top: 1px solid rgba(255, 255, 255, 0.2); /* Changed from #eee */
+    }
+    
+    /* Button adjustments for better contrast */
+    .nav-btn {
+        background: linear-gradient(to right, #990F02, #b32212); /* Changed from #ff9a9e, #fad0c4 */
+        border: none;
+        color: white;
+        padding: 12px 25px;
+        font-size: 1.1rem;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .special-btn {
+        background: linear-gradient(to right, #990F02, #b32212); /* Changed from #ff758c, #ff7eb3 */
+        font-weight: bold;
+    }
+    
+    .heart-btn {
+        background: linear-gradient(to right, #990F02, #b32212); /* Changed from #ff6b8b, #ff8fab */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    .us-btn {
+        background: linear-gradient(to right, #9d4edd, #c77dff);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+    
+    /* Gift button adjustments */
+    .gift-box .box {
+        width: 100px;
+        height: 70px;
+        background: linear-gradient(135deg, #990F02, #b32212); /* Changed from #ff758c, #ff7eb3 */
+        position: absolute;
+        bottom: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 10px;
+    }
+    
+    .gift-box .lid {
+        width: 110px;
+        height: 25px;
+        background: linear-gradient(135deg, #990F02, #b32212); /* Changed from #ff8fa3, #ffb3c6 */
+        position: absolute;
+        top: 45px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 10px;
+    }
+    
+    /* Adjust heart colors for better visibility */
+    .heart {
+        position: absolute;
+        color: #990F02; /* Changed from #ff6b8b */
+        font-size: 24px;
+        opacity: 0;
+        animation: heartFloat 5s linear infinite;
+    }
+    
+    /* Adjust balloon colors */
+    .balloon1 {
+        background-color: #990F02; /* Changed from #ff6b8b */
+        left: 10%;
+        top: 30px;
+        animation-delay: 0s;
+    }
+    
+    .balloon2 {
+        background-color: #4ecdc4;
+        left: 25%;
+        top: 60px;
+        animation-delay: 1s;
+    }
+    
+    .balloon3 {
+        background-color: #ffd166;
+        right: 20%;
+        top: 40px;
+        animation-delay: 2s;
+    }
+    
+    .balloon4 {
+        background-color: #06d6a0;
+        right: 10%;
+        top: 70px;
+        animation-delay: 3s;
+    }
+    
+    /* Confetti colors adjustment */
+    .confetti {
+        position: absolute;
+        width: 15px;
+        height: 15px;
+        opacity: 0;
+    }
+    
+    /* Traveling heart color */
+    .traveling-heart {
+        position: absolute;
+        color: #990F02; /* Changed from #d21404 */
+        font-size: 30px;
+        top: 50%;
+        left: 20%;
+        transform: translateY(-50%);
+        animation: travel 3s linear infinite;
+        z-index: 3;
+    }
+    
+    /* Adjust text colors in start screen for better contrast */
+    .message-title {
+        font-size: 3rem;
+        color: white;
+        margin-bottom: 10px;
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        animation: glow 2s infinite alternate;
+    }
+    
+    .message-subtitle {
+        font-size: 1.5rem;
+        color: #e0f7fa;
+        margin-bottom: 20px;
+    }
+    
+    /* Rest of your CSS remains the same below this line */
+    .map-animation {
+        width: 100%;
+        max-width: 800px;
+        height: 400px;
+        position: relative;
+        margin: 20px 0;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        padding: 30px;
+    }
+    
+    .country {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 2;
+    }
+    
+    .country-flag {
+        width: 120px;
+        height: 80px;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        margin-bottom: 15px;
+        border: 3px solid white;
+    }
+    
+    .country-flag img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .country-name {
+        font-size: 1.8rem;
+        font-weight: bold;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        margin-bottom: 5px;
+    }
+    
+    .person-name {
+        font-size: 1.2rem;
+        color: #ffeb3b;
+        font-style: italic;
+    }
+    
+    .connecting-line {
+        position: absolute;
+        width: 60%;
+        height: 5px;
+        background: linear-gradient(to right, #990F02, transparent, #4ecdc4); /* Changed first color */
+        top: 50%;
+        left: 20%;
+        z-index: 1;
+        animation: linePulse 2s infinite;
+    }
+    
+    .gift-button-container {
+        margin: 30px 0;
+        text-align: center;
+    }
+    
+    .gift-button {
+        background: linear-gradient(135deg, #654835, #654835); /* Changed from #4e0707, #4e0707 */
+        border: none;
+        border-radius: 50%;
+        width: 180px;
+        height: 180px;
+        cursor: pointer;
+        position: relative;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        transition: all 0.3s ease;
+        animation: float 3s ease-in-out infinite;
+    }
+    
+    .gift-button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+    }
+    
+    .gift-button:active {
+        transform: scale(0.95);
+    }
+    
+    .gift-box {
+        width: 100%;
+        height: 100%;
+        position: relative;
+    }
+    
+    .gift-box .ribbon {
+        width: 20px;
+        height: 70px;
+        background: #ffd166;
+        position: absolute;
+        top: 40px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .gift-box .ribbon:before {
+        content: '';
+        width: 70px;
+        height: 20px;
+        background: #ffd166;
+        position: absolute;
+        top: 25px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .gift-box .bow {
+        width: 30px;
+        height: 30px;
+        background: #990F02; /* Changed from #ff6b8b */
+        position: absolute;
+        top: 55px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-radius: 50%;
+        box-shadow: 0 0 20px rgba(153, 15, 2, 0.5); /* Updated color */
+    }
+    
+    .gift-message {
+        font-size: 1.8rem;
+        color: white;
+        margin-top: 20px;
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+    
+    .click-hint {
+        font-size: 1.2rem;
+        color: #b2ebf2;
+        margin-top: 10px;
+        animation: blink 2s infinite;
+    }
+    
+    .content {
+        padding: 30px;
+        min-height: 500px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .page {
+        display: none;
+        width: 100%;
+        text-align: center;
+        animation: fadeIn 1s;
+    }
+    
+    .page.active {
+        display: block;
+    }
+    
+    .cake-container {
+        position: relative;
+        width: 200px;
+        height: 150px;
+        margin: 20px auto 30px;
+    }
+    
+    .candle {
+        position: absolute;
+        width: 10px;
+        height: 30px;
+        background: #ffd166;
+        bottom: 120px;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    
+    .flame {
+        position: absolute;
+        width: 15px;
+        height: 25px;
+        background: #ff9e00;
+        border-radius: 50% 50% 20% 20%;
+        bottom: 150px;
+        left: 50%;
+        transform: translateX(-50%);
+        animation: flicker 0.8s infinite alternate;
+    }
+    
+    .button-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+    }
+    
+    .hearts-container {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 1;
+    }
+    
+    /* Animations */
+    @keyframes travel {
+        0% { left: 20%; transform: translateY(-50%) scale(1); }
+        50% { transform: translateY(-50%) scale(1.2); }
+        100% { left: 80%; transform: translateY(-50%) scale(1); }
+    }
+    
+    @keyframes linePulse {
+        0%, 100% { opacity: 0.5; }
+        50% { opacity: 1; }
+    }
+    
+    @keyframes glow {
+        0% { text-shadow: 0 0 10px rgba(255, 255, 255, 0.5); }
+        100% { text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 30px rgba(255, 255, 255, 0.6); }
+    }
+    
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-20px); }
+    }
+    
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-15px); }
+    }
+    
+    @keyframes flicker {
+        0% { transform: translateX(-50%) scale(1); opacity: 1; }
+        100% { transform: translateX(-50%) scale(1.1); opacity: 0.8; }
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes heartFloat {
+        0% { transform: translateY(100vh) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .map-animation {
+            height: 300px;
+            flex-direction: column;
+            justify-content: center;
+            gap: 40px;
+        }
+        
+        .connecting-line {
+            width: 5px;
+            height: 60%;
+            left: 50%;
+            top: 20%;
+            background: linear-gradient(to bottom, #990F02, transparent, #4ecdc4); /* Updated color */
+        }
+        
+        .traveling-heart {
+            left: 50%;
+            top: 20%;
+            animation: travelVertical 3s linear infinite;
+        }
+        
+        .message-title {
+            font-size: 2.2rem;
+        }
+        
+        .gift-button {
+            width: 150px;
+            height: 150px;
+        }
+        
+        .header h1 {
+            font-size: 2.2rem;
+        }
+        
+        .page h2 {
+            font-size: 1.8rem;
+        }
+        
+        .page p {
+            font-size: 1.1rem;
+        }
+        
+        .button-container {
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .nav-btn {
+            width: 80%;
+        }
+    }
+    
+    @keyframes travelVertical {
+        0% { top: 20%; left: 50%; transform: translateX(-50%) scale(1); }
+        50% { transform: translateX(-50%) scale(1.2); }
+        100% { top: 80%; left: 50%; transform: translateX(-50%) scale(1); }
+    }
+    
+    @media (max-width: 480px) {
+        .country-flag {
+            width: 90px;
+            height: 60px;
+        }
+        
+        .country-name {
+            font-size: 1.4rem;
+        }
+        
+        .message-title {
+            font-size: 1.8rem;
+        }
+        
+        .message-subtitle {
+            font-size: 1.2rem;
+        }
+        
+        .gift-button {
+            width: 120px;
+            height: 120px;
+        }
+        
+        .gift-box .box {
+            width: 70px;
+            height: 50px;
+            bottom: 35px;
+        }
+        
+        .gift-box .lid {
+            width: 80px;
+            height: 20px;
+            top: 40px;
+        }
+        
+        .gift-message {
+            font-size: 1.4rem;
+        }
+    }
+</style>
+</head>
+<body>
+    <!-- Start Screen with Simplified Map Animation -->
+    <div class="start-screen" id="startScreen">
+        <div class="message-container">
+            <h1 class="message-title">From Japan to Nepal</h1>
+            <p class="message-subtitle">A special connection across the miles</p>
+        </div>
+        
+        <div class="map-animation">
+            <div class="country">
+                <div class="country-flag">
+                    <img src="https://flagcdn.com/w320/jp.png" alt="Japan Flag">
+                </div>
+                <div class="country-name">Japan</div>
+                <div class="person-name">Pandu</div>
+            </div>
+            
+            <div class="traveling-heart">
+                <i class="fas fa-heart"></i>
+            </div>
+            
+            <div class="connecting-line"></div>
+            
+            <div class="country">
+                <div class="country-flag">
+                    <img src="https://flagcdn.com/w320/np.png" alt="Nepal Flag">
+                </div>
+                <div class="country-name">Nepal</div>
+                <div class="person-name">Aaluu</div>
+            </div>
+        </div>
+        
+        <div class="message-container">
+            <h2 class="message-title">From Pandu to Aaluu</h2>
+            <p class="message-subtitle">Birthday wishes traveling across continents</p>
+        </div>
+        
+        <!-- Gift Box Button -->
+        <div class="gift-button-container">
+            <button class="gift-button" onclick="openGift()">
+                <div class="gift-box">
+                    <div class="box"></div>
+                    <div class="lid"></div>
+                    <div class="ribbon"></div>
+                    <div class="bow"></div>
+                </div>
+            </button>
+            <p class="gift-message">This is my gift for your special day</p>
+            <p class="click-hint">Click the gift box to open</p>
+        </div>
+    </div>
+    
+    <!-- Main Birthday Card (hidden initially) -->
+    <div class="container" id="mainContainer">
+        <div class="header">
+            <div class="balloon balloon1"></div>
+            <div class="balloon balloon2"></div>
+            <div class="balloon balloon3"></div>
+            <div class="balloon balloon4"></div>
+            <h1>Aaluu</h1>
+            <h1>Happy Birthday! 🎉</h1>
+            <p>Wishing you a day filled with joy and laughter!</p>
+        </div>
+        
+        <div class="content">
+            <!-- Page 1: Welcome -->
+            <div class="page active" id="page1">
+                <h2>Welcome to Your Special Day!</h2>
+                <div class="cake-container">
+                    <div class="cake"></div>
+                    <div class="cake-top"></div>
+                    <div class="candle"></div>
+                    <div class="flame"></div>
+                </div>
+                <p>Today is all about you! I hope this interactive card brings a smile to your face and makes your birthday even more special.(Aaluu)</p>
+                <div class="message-box">
+                    <p><i class="fas fa-quote-left"></i> On your birthday, I wish you endless happiness, love that grows stronger every day, and dreams that always come true. You deserve the world and more! <i class="fas fa-quote-right"></i></p>
+                </div>
+                <div class="button-container">
+                    <button class="nav-btn special-btn" onclick="nextPage()">
+                        Start Celebration <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="nav-btn heart-btn" onclick="createHearts()">
+                        <i class="fas fa-heart"></i> Send Love
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Page 2: Wishes -->
+            <div class="page" id="page2">
+                <h2>Birthday Wishes for You</h2>
+                <p>Here are some heartfelt wishes to make your day brighter:</p>
+                <div class="message-box">
+                    <p><i class="fas fa-star"></i> May your birthday be as incredible as you are, filled with joy that lasts the whole year through.</p>
+                    <p><i class="fas fa-star"></i> Wishing you success in all your endeavors, good health, and prosperity today and always.</p>
+                    <p><i class="fas fa-star"></i> Timile socheko kura haru, garna manlageko kura haru sabai safal hos.</p>
+                </div>
+                <div class="button-container">
+                    <button class="nav-btn" onclick="prevPage()">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </button>
+                    <button class="nav-btn special-btn" onclick="nextPage()">
+                        Sweet Messages <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="nav-btn" onclick="showConfetti()">
+                        <i class="fas fa-birthday-cake"></i> Celebrate!
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Page 3: Sweet Messages -->
+            <div class="page" id="page3">
+                <h2>Sweet Messages Just for You</h2>
+                <p>You're an amazing person, and here's why:</p>
+                <div class="message-box">
+                    <p><i class="fas fa-heart"></i> Your kindness touches everyone around you.</p>
+                    <p><i class="fas fa-heart"></i> Your smile can light up the darkest room.</p>
+                    <p><i class="fas fa-heart"></i> Your positive energy is contagious and inspiring.</p>
+                    <p><i class="fas fa-heart"></i> You make the world a better place just by being in it.</p>
+                </div>
+                <div class="button-container">
+                    <button class="nav-btn" onclick="prevPage()">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </button>
+                    <button class="nav-btn special-btn" onclick="nextPage()">
+                        Final Wishes <i class="fas fa-arrow-right"></i>
+                    </button>
+                    <button class="nav-btn heart-btn" onclick="createHearts()">
+                        <i class="fas fa-heart"></i> More Love
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Page 4: Final Page -->
+            <div class="page" id="page4">
+                <h2>Happy Birthday Once Again!</h2>
+                <p>last message tmro lagi,remember that you are cherished and loved more than words can express.</p>
+                <div class="message-box">
+                    <p>May this year bring you closer to your dreams, fill your life with beautiful moments, and surround you with people who appreciate how wonderful you are.😋😋Me</p>
+                    <p>Thank you for being you, and may your special day be as fantastic as you are!</p>
+                </div>
+                <div class="button-container">
+                    <button class="nav-btn" onclick="prevPage()">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </button>
+                    <button class="nav-btn us-btn" onclick="showGallery()">
+                        <i class="fas fa-images"></i> Special Us Gallery
+                    </button>
+                    <button class="nav-btn special-btn" onclick="restartCard()">
+                        <i class="fas fa-redo"></i> Restart Card
+                    </button>
+                    <button class="nav-btn" onclick="showConfetti()">
+                        <i class="fas fa-fireworks"></i> Final Celebration!
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Page 5: Gallery Page -->
+            <div class="page" id="page5">
+                <h2>Special Us Gallery</h2>
+                <p>A collection of beautiful moments and memories we've shared together 💖</p>
+                <div class="message-box">
+                    <p><i class="fas fa-heart"></i> Every moment with you is special. These memories are just a small glimpse of the beautiful times we've shared and the many more to come!</p>
+                </div>
+                <div class="button-container">
+                    <button class="nav-btn" onclick="prevPage()">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </button>
+                    <button class="nav-btn heart-btn" onclick="createHearts()">
+                        <i class="fas fa-heart"></i> Send Love
+                    </button>
+                    <button class="nav-btn special-btn" onclick="restartCard()">
+                        <i class="fas fa-redo"></i> Restart Card
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Made with <i class="fas fa-heart" style="color:#ff6b8b;"></i> for your special day and also my Gift for you</p>
+            <p>From your Pandu.</p>
+            <p>Click the "Send Love" button for a surprise!</p>
+        </div>
+        
+        <div class="hearts-container" id="heartsContainer"></div>
+    </div>
+
+    <script>
+        // Start Screen Functionality
+        function openGift() {
+            const startScreen = document.getElementById('startScreen');
+            const mainContainer = document.getElementById('mainContainer');
+            const giftButton = document.querySelector('.gift-button');
+            
+            // Add click animation to gift button
+            giftButton.style.animation = 'none';
+            giftButton.style.transform = 'scale(0.8)';
+            
+            // Create confetti effect
+            showConfetti();
+            
+            // Fade out start screen and show main container
+            setTimeout(() => {
+                startScreen.classList.add('hidden');
+                setTimeout(() => {
+                    mainContainer.classList.add('active');
+                    // Show more confetti when main container appears
+                    setTimeout(() => showConfetti(), 500);
+                }, 500);
+            }, 300);
+        }
+        
+        // Page navigation
+        let currentPage = 1;
+        const totalPages = 5;
+        
+        function nextPage() {
+            if (currentPage < totalPages) {
+                document.getElementById(`page${currentPage}`).classList.remove('active');
+                currentPage++;
+                document.getElementById(`page${currentPage}`).classList.add('active');
+            }
+        }
+        
+        function prevPage() {
+            if (currentPage > 1) {
+                document.getElementById(`page${currentPage}`).classList.remove('active');
+                currentPage--;
+                document.getElementById(`page${currentPage}`).classList.add('active');
+            }
+        }
+        
+        function showGallery() {
+            document.getElementById(`page${currentPage}`).classList.remove('active');
+            currentPage = 5;
+            document.getElementById(`page${currentPage}`).classList.add('active');
+            showConfetti();
+        }
+        
+        function restartCard() {
+            document.getElementById(`page${currentPage}`).classList.remove('active');
+            currentPage = 1;
+            document.getElementById(`page${currentPage}`).classList.add('active');
+            showConfetti();
+        }
+        
+        // Create floating hearts animation
+        function createHearts() {
+            const container = document.getElementById('heartsContainer');
+            const colors = ['#ff6b8b', '#ff8fab', '#ffafcc', '#ffd6e0'];
+            
+            // Create 15 hearts
+            for (let i = 0; i < 15; i++) {
+                const heart = document.createElement('div');
+                heart.classList.add('heart');
+                heart.innerHTML = '<i class="fas fa-heart"></i>';
+                
+                // Random properties
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const size = Math.random() * 20 + 15;
+                const startPos = Math.random() * 100;
+                const duration = Math.random() * 3 + 4;
+                const delay = Math.random() * 2;
+                
+                // Apply styles
+                heart.style.left = `${startPos}%`;
+                heart.style.color = color;
+                heart.style.fontSize = `${size}px`;
+                heart.style.animationDuration = `${duration}s`;
+                heart.style.animationDelay = `${delay}s`;
+                
+                container.appendChild(heart);
+                
+                // Remove heart after animation completes
+                setTimeout(() => {
+                    heart.remove();
+                }, (duration + delay) * 1000);
+            }
+        }
+        
+        // Create confetti effect
+        function showConfetti() {
+            const container = document.querySelector('.container.active') || document.body;
+            const colors = ['#ff6b8b', '#4ecdc4', '#ffd166', '#06d6a0', '#ff9a9e', '#9d4edd'];
+            
+            // Create 50 confetti pieces
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti');
+                
+                // Random properties
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const size = Math.random() * 10 + 5;
+                const posX = Math.random() * 100;
+                const rotation = Math.random() * 360;
+                const duration = Math.random() * 1 + 0.5;
+                const delay = Math.random() * 0.5;
+                
+                // Apply styles
+                confetti.style.backgroundColor = color;
+                confetti.style.width = `${size}px`;
+                confetti.style.height = `${size}px`;
+                confetti.style.left = `${posX}%`;
+                confetti.style.top = '-20px';
+                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+                confetti.style.transform = `rotate(${rotation}deg)`;
+                
+                container.appendChild(confetti);
+                
+                // Animate confetti falling
+                setTimeout(() => {
+                    confetti.style.transition = `all ${duration}s ease-in`;
+                    confetti.style.opacity = '1';
+                    confetti.style.top = '100%';
+                    confetti.style.transform = `rotate(${rotation + 360}deg)`;
+                }, delay * 1000);
+                
+                // Remove confetti after animation
+                setTimeout(() => {
+                    confetti.remove();
+                }, (delay + duration) * 1000 + 100);
+            }
+            
+            // Also create some hearts for good measure
+            createHearts();
+        }
+        
+        // Initialize animations when page loads
+        window.addEventListener('load', () => {
+            // Start the traveling heart animation
+            const travelingHeart = document.querySelector('.traveling-heart');
+            travelingHeart.style.animation = 'travel 3s linear infinite';
+            
+            // Add some initial confetti
+            setTimeout(() => {
+                showConfetti();
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
